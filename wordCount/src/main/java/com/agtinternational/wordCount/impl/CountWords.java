@@ -14,11 +14,12 @@ import java.util.stream.Stream;
 
 public class CountWords {
 
+	private static final String ONLY_LETTERS_REGEX = "\\p{L}+";
+	private static final String CHARSET_ISO = "ISO-8859-1";
 	static Map<String, Long> result = new HashMap<>();
 
 	public static void main(String args[]) throws IOException {
 
-		String prueba = " spezifisch=1, ";
 
 		
 		String fileName = "/home/guel/agt/testdata/a/Berlin.txt";
@@ -72,11 +73,8 @@ public class CountWords {
 	private static void countInLine(String line) {
 		// System.out.println("result entrada " + result);
 		Map<String, Long> counter = Arrays.asList(line.split(",|\\s+|\\.")).stream().map(String::toLowerCase)
-				// hay problemas con los ascii raros, pero si los quito me cargo
-				// los putos caracteres alemanes
-				// .map(word->word.replaceAll("[^\\x00-\\x7F]", ""))
 				.filter(word -> word.length() > 0)
-				.filter(word->word.matches("\\p{L}+"))
+				.filter(word->word.matches(ONLY_LETTERS_REGEX))
 				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
 		counter.forEach((key, value) -> result.merge(key, value, Long::sum));
@@ -88,17 +86,9 @@ public class CountWords {
 
 	private static void readFile(String fileName) throws IOException {
 
-		Files.lines(Paths.get(fileName), Charset.forName("ISO-8859-1")).filter(line -> line.length() > 0)
-		//.filter(word->word.matches("\\p{L}+"))
+		Files.lines(Paths.get(fileName), Charset.forName(CHARSET_ISO)).filter(line -> line.length() > 0)
 				.forEach(String -> countInLine(String));
-		//
-		// stream.map(line -> line.split(" "))
-		// .collect(Collectors.groupingBy(Function.identity(),
-		// Collectors.counting()));
 
-		// }
-
-		//
 	}
 
 }
