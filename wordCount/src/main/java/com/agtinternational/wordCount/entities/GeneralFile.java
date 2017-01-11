@@ -1,6 +1,6 @@
 package com.agtinternational.wordCount.entities;
 
-public class File {
+public class GeneralFile {
 
 	public String getName() {
 		return name;
@@ -32,7 +32,7 @@ public class File {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		File other = (File) obj;
+		GeneralFile other = (GeneralFile) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;

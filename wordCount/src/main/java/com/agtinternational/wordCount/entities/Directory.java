@@ -5,7 +5,7 @@ import java.util.List;
 public class Directory {
 
 	String name;
-	List<File> files;
+	List<GeneralFile> files;
 	List<Directory> subdirectories;
 	
 	public String getName() {
@@ -14,10 +14,10 @@ public class Directory {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public List<File> getFiles() {
+	public List<GeneralFile> getFiles() {
 		return files;
 	}
-	public void setFiles(List<File> files) {
+	public void setFiles(List<GeneralFile> files) {
 		this.files = files;
 	}
 	public List<Directory> getSubdirectories() {

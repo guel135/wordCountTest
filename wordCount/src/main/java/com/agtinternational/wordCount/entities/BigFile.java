@@ -2,7 +2,7 @@ package com.agtinternational.wordCount.entities;
 
 import java.util.List;
 
-public class BigFile extends File{
+public class BigFile extends GeneralFile{
 	List<Word>  words;
 
 	public List<Word> getWords() {
