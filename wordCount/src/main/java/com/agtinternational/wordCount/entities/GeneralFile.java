@@ -5,17 +5,26 @@ public class GeneralFile {
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public Long getWordCount() {
 		return wordCount;
 	}
+
 	public void setWordCount(Long wordCount) {
 		this.wordCount = wordCount;
 	}
-	String name;
-	Long wordCount;
+
+	public GeneralFile() {
+
+	}
+
+	static String name;
+	static Long wordCount;
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -24,6 +33,7 @@ public class GeneralFile {
 		result = prime * result + ((wordCount == null) ? 0 : wordCount.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -45,5 +55,5 @@ public class GeneralFile {
 			return false;
 		return true;
 	}
-	
+
 }

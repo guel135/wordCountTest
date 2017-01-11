@@ -5,6 +5,10 @@ import java.util.List;
 public class BigFile extends GeneralFile{
 	List<Word>  words;
 
+	public BigFile() {
+	
+	}
+
 	public List<Word> getWords() {
 		return words;
 	}
