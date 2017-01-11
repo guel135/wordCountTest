@@ -25,7 +25,7 @@ public class CountWords {
 
 	public static void main(String args[]) throws IOException {
 
-		String fileName = "/home/guel/agt/testdata/a/Berlin.txt";
+		//String fileName = "/home/guel/agt/testdata/a/Berlin.txt";
 		String folder = "/home/guel/agt/testdata";
 		readFolders(folder);
 		// readFile(fileName);
@@ -73,7 +73,7 @@ public class CountWords {
 		// System.out.println("total of words " + sum + "\n \n");
 	}
 
-	private static Object readFile(String fileName) throws IOException {
+	private static GeneralFile readFile(String fileName) throws IOException {
 
 		Map<String, Long> result = new HashMap<>();
 		Files.lines(Paths.get(fileName), Charset.forName(CHARSET_ISO)).filter(line -> line.length() > 0)
@@ -87,7 +87,7 @@ public class CountWords {
 			BigFile file = new BigFile();
 			file.setName(fileName);
 			file.setWordCount(sumWords);
-			List<Word> words = new ArrayList();
+			List<Word> words = new ArrayList<Word>();
 			Map<String, Long> wordsFiltered = result.entrySet().stream().filter(map -> map.getValue() > 40)
 
 					.collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
