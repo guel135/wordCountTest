@@ -4,6 +4,12 @@ public class Word {
 	String word;
 	Long repetition;
 
+	public Word(String word, Long repetition) {
+		super();
+		this.word = word;
+		this.repetition = repetition;
+	}
+
 	public String getWord() {
 		return word;
 	}

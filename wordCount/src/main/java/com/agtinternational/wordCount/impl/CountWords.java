@@ -5,8 +5,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -14,6 +16,7 @@ import java.util.stream.Stream;
 
 import com.agtinternational.wordCount.entities.BigFile;
 import com.agtinternational.wordCount.entities.GeneralFile;
+import com.agtinternational.wordCount.entities.Word;
 
 public class CountWords {
 
@@ -35,11 +38,19 @@ public class CountWords {
 					System.out.println("Directory " + filePath);
 
 				if (Files.isRegularFile(filePath)) {
-					Map<String, Long> result = new HashMap<>();
 					// System.out.println("File" + filePath);
 					try {
-						GeneralFile file = readFile(filePath.toString());
-						System.out.println("---------" + file.getName());
+
+						Object file = readFile(filePath.toString());
+						if ( file instanceof BigFile) {
+							BigFile bigFile = (BigFile) file;
+							System.out.println("es big file "+bigFile.getName()+" words: "+bigFile.getWordCount());
+						}
+						if (file instanceof GeneralFile) {
+							GeneralFile generalFile = (GeneralFile) file;
+							System.out.println("es small file "+generalFile.getName()+" words: "+generalFile.getWordCount());
+						}
+
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -62,7 +73,7 @@ public class CountWords {
 		// System.out.println("total of words " + sum + "\n \n");
 	}
 
-	private static GeneralFile readFile(String fileName) throws IOException {
+	private static Object readFile(String fileName) throws IOException {
 
 		Map<String, Long> result = new HashMap<>();
 		Files.lines(Paths.get(fileName), Charset.forName(CHARSET_ISO)).filter(line -> line.length() > 0)
@@ -76,10 +87,18 @@ public class CountWords {
 			BigFile file = new BigFile();
 			file.setName(fileName);
 			file.setWordCount(sumWords);
-			Map<String, Long> wordsFiltered = result.entrySet().stream()
-					.filter(map -> map.getValue() > 40)
+			List<Word> words = new ArrayList();
+			Map<String, Long> wordsFiltered = result.entrySet().stream().filter(map -> map.getValue() > 40)
+
 					.collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+			wordsFiltered.forEach((k, v) -> {
+				Word word = new Word(k, v);
+				words.add(word);
+			});
+			file.setWords(words);
+
 			System.out.println("@@@@@@@@@" + wordsFiltered);
+
 			return file;
 		}
 		// System.out.println(sumWords);
