@@ -1,13 +1,21 @@
 package com.agtinternational.wordCount.entities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Directory {
 
 	String name;
 	List<GeneralFile> files;
-	List<Directory> subdirectories;
-	
+	Map<String, Directory> subdirectories;
+	public Directory(String name) {
+		super();
+		files=new ArrayList<GeneralFile>();
+		subdirectories=new HashMap<String,Directory>();
+		this.name = name;
+	}
 	public String getName() {
 		return name;
 	}
@@ -20,10 +28,10 @@ public class Directory {
 	public void setFiles(List<GeneralFile> files) {
 		this.files = files;
 	}
-	public List<Directory> getSubdirectories() {
+	public Map<String, Directory> getSubdirectories() {
 		return subdirectories;
 	}
-	public void setSubdirectories(List<Directory> subdirectories) {
+	public void setSubdirectories(Map<String, Directory> subdirectories) {
 		this.subdirectories = subdirectories;
 	}
 	@Override
@@ -61,5 +69,7 @@ public class Directory {
 			return false;
 		return true;
 	}
+
 	
+
 }

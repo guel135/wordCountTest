@@ -1,7 +1,5 @@
 package com.agtinternational.rest.file.service;
 
-import java.util.List;
-
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -13,7 +11,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 @Path("/")
-public class FileWebService  {
+public class FilesWebService  {
 
 //	@PUT
 //	@Path("/files")
