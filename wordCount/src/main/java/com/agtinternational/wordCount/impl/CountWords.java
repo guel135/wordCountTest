@@ -55,12 +55,14 @@ public class CountWords {
 
 	private static void readFoldersWalk(String folder) throws IOException {
 
+		baseDirectory.setName(folder);
+		
 		try (Stream<Path> paths = Files.walk(Paths.get(folder))) {
 			paths.forEach(filePath -> {
 				System.out.println(filePath);
 				ArrayList<String> splittedPaths = new ArrayList<String>();
-
-				splittedPaths.addAll(Arrays.asList(filePath.toString().split("/")));
+				String filePathName = filePath.toString().replaceAll(folder, "");
+				splittedPaths.addAll(Arrays.asList(filePathName.split("/")));
 				if (splittedPaths.get(0).equals("/"))
 					splittedPaths.remove(0);
 				if (Files.isDirectory(filePath)) {
@@ -108,12 +110,11 @@ public class CountWords {
 		splittedPaths.remove(0);
 		// System.out.println(name + " cortes " + cortes);
 		if (splittedPaths.size() == 0 && file != null) {
-			
+
 			System.out.println("entra if add FILE" + file);
-			if (parentDirectory.getFiles() == null)
-				{
+			if (parentDirectory.getFiles() == null) {
 				parentDirectory.setFiles(new ArrayList<GeneralFile>());
-				}
+			}
 			parentDirectory.getFiles().add(file);
 
 		} else {
@@ -127,7 +128,7 @@ public class CountWords {
 			}
 			if (splittedPaths.size() > 0) {
 				subdirectory = addSubdirectory(file, subdirectory, splittedPaths);
-				System.out.println("entra if add subdirectory name:"+name + file);
+				System.out.println("entra if add subdirectory name:" + name + file);
 			}
 			if (parentDirectory.getSubdirectories() == null)
 				parentDirectory.setSubdirectories(new HashMap<String, Directory>());
@@ -135,8 +136,6 @@ public class CountWords {
 		}
 		return parentDirectory;
 	}
-	
-
 
 	private static void countInLine(String line, Map<String, Long> result) {
 		// System.out.println("result entrada " + result);
@@ -153,16 +152,20 @@ public class CountWords {
 
 	public static GeneralFile readFile(String fileName) throws IOException {
 
+		String cleanName=cleanFileName(fileName);
+		
 		Map<String, Long> result = new HashMap<>();
 		Files.lines(Paths.get(fileName), Charset.forName(CHARSET_ISO)).filter(line -> line.length() > 0)
 				.forEach(String -> {
 					countInLine(String, result);
 				});
 
+		
+		
 		long sumWords = result.values().stream().mapToLong(Long::longValue).sum();
 		// System.out.println(sumWords);
 		if (sumWords > 1000) {
-			BigFile file = new BigFile(fileName);
+			BigFile file = new BigFile(cleanName);
 			file.setWordCount(sumWords);
 			List<Word> words = new ArrayList<Word>();
 			Map<String, Long> wordsFiltered = result.entrySet().stream().filter(map -> map.getValue() > 50)
@@ -180,11 +183,15 @@ public class CountWords {
 		}
 		// System.out.println(sumWords);
 		// System.out.println(result);
-		GeneralFile file = new GeneralFile(fileName);
+		GeneralFile file = new GeneralFile(cleanName);
 		file.setWordCount(sumWords);
 
 		return file;
 
+	}
+
+	private static String cleanFileName(String fileName) {
+		return Arrays.asList(fileName.split("/")).get(fileName.split("/").length-1);
 	}
 
 }
