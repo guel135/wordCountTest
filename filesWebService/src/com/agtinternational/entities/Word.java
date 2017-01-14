@@ -1,4 +1,4 @@
-package com.agtinternational.wordCount.entities;
+package com.agtinternational.entities;
 
 public class Word {
 	String word;
