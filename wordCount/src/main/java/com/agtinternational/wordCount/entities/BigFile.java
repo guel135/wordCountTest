@@ -2,12 +2,12 @@ package com.agtinternational.wordCount.entities;
 
 import java.util.List;
 
-public class BigFile extends GeneralFile{
-	List<Word>  words;
-
-	public BigFile() {
-	
+public class BigFile extends GeneralFile {
+	public BigFile(String name) {
+		super(name);
 	}
+
+	List<Word> words;
 
 	public List<Word> getWords() {
 		return words;
@@ -41,5 +41,5 @@ public class BigFile extends GeneralFile{
 			return false;
 		return true;
 	}
-	
+
 }

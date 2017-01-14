@@ -2,6 +2,14 @@ package com.agtinternational.wordCount.entities;
 
 public class GeneralFile {
 
+	private String name;
+	private Long wordCount;
+
+	public GeneralFile(String name) {
+		super();
+		this.name = name;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -17,13 +25,6 @@ public class GeneralFile {
 	public void setWordCount(Long wordCount) {
 		this.wordCount = wordCount;
 	}
-
-	public GeneralFile() {
-
-	}
-
-	static String name;
-	static Long wordCount;
 
 	@Override
 	public int hashCode() {

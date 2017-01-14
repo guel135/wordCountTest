@@ -28,25 +28,22 @@ public class CountWords {
 
 	public static void main(String args[]) throws IOException {
 
-		String fileName = "/home/guel/agt/testdata/a/perro/Berlin.txt";
-		String fileName2 = "home/guel/agt/testdata/b/juan/manolo";
-		String fileName3 = "home/guel/agt/testdata/b/perro/paco";
-		String folder = "home/guel/agt/testdata";
-		// readFoldersWalk(folder);
+		// String fileName = "/home/guel/agt/testdata/a/perro/Berlin.txt";
+		// String fileName2 = "home/guel/agt/testdata/b/juan/manolo";
+		// String fileName3 = "home/guel/agt/testdata/b/perro/paco";
+		String folder = "/home/guel/agt/testdata";
+		readFoldersWalk(folder);
+		//
+		// ArrayList<String> cortes = new ArrayList<String>();
+		// cortes.addAll(Arrays.asList(folder.split("/")));
+		// baseDirectory = addSubdirectory(baseDirectory, cortes);
+		//
+		// cortes.addAll(Arrays.asList(fileName2.split("/")));
+		// baseDirectory = addSubdirectory(baseDirectory, cortes);
+		// cortes.addAll(Arrays.asList(fileName3.split("/")));
+		// baseDirectory = addSubdirectory(baseDirectory, cortes);
 
-		ArrayList<String> cortes = new ArrayList<String>();
-		cortes.addAll(Arrays.asList(folder.split("/")));
-		baseDirectory = addSubdirectory(baseDirectory, cortes);
-
-		cortes.addAll(Arrays.asList(fileName2.split("/")));
-		baseDirectory = addSubdirectory(baseDirectory, cortes);
-		cortes.addAll(Arrays.asList(fileName3.split("/")));
-		baseDirectory = addSubdirectory(baseDirectory, cortes);
-		
-		
-		
-		
-		System.out.println(baseDirectory);
+		// System.out.println(baseDirectory);
 		Gson gson = new Gson();
 		String jsonInString = gson.toJson(baseDirectory);
 		System.out.println(jsonInString);
@@ -61,69 +58,39 @@ public class CountWords {
 		try (Stream<Path> paths = Files.walk(Paths.get(folder))) {
 			paths.forEach(filePath -> {
 				System.out.println(filePath);
-				if (Files.isDirectory(filePath)) {
+				ArrayList<String> splittedPaths = new ArrayList<String>();
 
-					if (baseDirectory.getSubdirectories() == null)
-						baseDirectory.setSubdirectories(new HashMap<String, Directory>());
-					baseDirectory.getSubdirectories().put(filePath.toString(), new Directory(filePath.toString()));
+				splittedPaths.addAll(Arrays.asList(folder.split("/")));
+				if (splittedPaths.get(0).equals("/"))
+					splittedPaths.remove(0);
+				if (Files.isDirectory(filePath)) {
+					baseDirectory = addSubdirectory(null, baseDirectory, splittedPaths);
+
+					// if (baseDirectory.getSubdirectories() == null)
+					// baseDirectory.setSubdirectories(new HashMap<String,
+					// Directory>());
+					// baseDirectory.getSubdirectories().put(filePath.toString(),
+					// new Directory(filePath.toString()));
 
 				}
 
-				System.out.println("Directory " + filePath);
+				// System.out.println("Directory " + filePath);
 
 				if (Files.isRegularFile(filePath)) {
 					// System.out.println("File" + filePath);
 					try {
 
-						Object file = readFile(filePath.toString());
+						GeneralFile file = readFile(filePath.toString());
 						if (file instanceof BigFile) {
 							BigFile bigFile = (BigFile) file;
-							// System.out
-							// .println("es big file " + bigFile.getName() + "
-							// words: " + bigFile.getWordCount());
+							System.out.println("Big" + bigFile.getName() + "words:" + bigFile.getWordCount());
 						}
 						if (file instanceof GeneralFile) {
 							GeneralFile generalFile = (GeneralFile) file;
-							// System.out.println(
-							// "es small file " + generalFile.getName() + "
-							// words: " + generalFile.getWordCount());
-						}
-
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			});
-		}
-	}
-
-	private static void readFolders(String folder) throws IOException {
-
-		try (Stream<Path> paths = Files.walk(Paths.get(folder))) {
-			paths.forEach(FilePath -> {
-				String path = FilePath.toString().replaceAll(folder, ".");
-				System.out.println(FilePath);
-				if (Files.isDirectory(FilePath))
-					if (baseDirectory.getSubdirectories() != null)
-						baseDirectory.getSubdirectories().put(path.toString(), new Directory(path.toString()));
-				System.out.println("Directory " + path);
-
-				if (Files.isRegularFile(FilePath)) {
-					// System.out.println("File" + filePath);
-					try {
-
-						Object file = readFile(FilePath.toString());
-						if (file instanceof BigFile) {
-							BigFile bigFile = (BigFile) file;
 							System.out
-									.println("es big file " + bigFile.getName() + " words: " + bigFile.getWordCount());
+									.println("Small " + generalFile.getName() + "words:" + generalFile.getWordCount());
 						}
-						if (file instanceof GeneralFile) {
-							GeneralFile generalFile = (GeneralFile) file;
-							System.out.println(
-									"es small file " + generalFile.getName() + " words: " + generalFile.getWordCount());
-						}
+						baseDirectory = addSubdirectory(file, baseDirectory, splittedPaths);
 
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -134,61 +101,33 @@ public class CountWords {
 		}
 	}
 
-	private static void addToDirectoryTree(Object e, String path, String folder) {
+	private static Directory addSubdirectory(GeneralFile file, Directory parentDirectory,
+			ArrayList<String> splittedPaths) {
+		String name = splittedPaths.get(0);
+		splittedPaths.remove(0);
+		// System.out.println(name + " cortes " + cortes);
+		if (splittedPaths.size() == 0 && file != null) {
+			if (parentDirectory.getFiles() == null)
+				parentDirectory.setFiles(new ArrayList<GeneralFile>());
+			parentDirectory.getFiles().add(file);
 
-		String array[] = cleanPath(path, folder).split("/");
-
-		int x = 0;
-		while (x < array.length) {
-			if (baseDirectory.getSubdirectories().containsKey(array[x])) {
+		} else {
+			Directory subdirectory;
+			if (parentDirectory.getSubdirectories() != null && parentDirectory.getSubdirectories().containsKey(name)) {
+				subdirectory = parentDirectory.getSubdirectories().get(name);
 
 			} else {
-				// addSubdirectory(baseDirectory, array, x);
+				subdirectory = new Directory(name);
 			}
+			if (splittedPaths.size() > 0) {
+				subdirectory = addSubdirectory(file, subdirectory, splittedPaths);
 
-			x++;
+			}
+			if (parentDirectory.getSubdirectories() == null)
+				parentDirectory.setSubdirectories(new HashMap<String, Directory>());
+			parentDirectory.getSubdirectories().put(name, subdirectory);
 		}
-
-		System.out.println("in addToDirectory");
-		// cortar path por / y recorrer hacia el final
-		List<String> pathSplitted = Arrays.asList(cleanPath(path, folder).split("/"));
-
-		for (String string : pathSplitted) {
-			System.out.println(string);
-			// if (baseDirectory)
-
-		}
-
-	}
-
-	private static Directory addSubdirectory(Directory parentDirectory, ArrayList<String> cortes) {
-		// List<String> cortes=Arrays.asList(url.split("/"));
-		ArrayList<String> cortesDuplicated = cortes;
-		String name = cortesDuplicated.get(0);
-		cortesDuplicated.remove(0);
-		System.out.println(name + " cortes " + cortes);
-		Directory subdirectory ;
-		
-		if (parentDirectory.getSubdirectories().containsKey(name)) {
-			subdirectory=parentDirectory.getSubdirectories().get(name);
-		
-		}else 
-		{
-			subdirectory= new Directory(name);
-		}
-		
-		if (cortesDuplicated.size() > 0) {
-			subdirectory = addSubdirectory(subdirectory, cortesDuplicated);
-
-		}
-
-		parentDirectory.getSubdirectories().put(name, subdirectory);
-
 		return parentDirectory;
-	}
-
-	private static String cleanPath(String path, String folder) {
-		return path.replace(folder, "");
 	}
 
 	private static void countInLine(String line, Map<String, Long> result) {
@@ -213,13 +152,12 @@ public class CountWords {
 				});
 
 		long sumWords = result.values().stream().mapToLong(Long::longValue).sum();
-		System.out.println(sumWords);
+		// System.out.println(sumWords);
 		if (sumWords > 1000) {
-			BigFile file = new BigFile();
-			file.setName(fileName);
+			BigFile file = new BigFile(fileName);
 			file.setWordCount(sumWords);
 			List<Word> words = new ArrayList<Word>();
-			Map<String, Long> wordsFiltered = result.entrySet().stream().filter(map -> map.getValue() > 40)
+			Map<String, Long> wordsFiltered = result.entrySet().stream().filter(map -> map.getValue() > 50)
 
 					.collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
 			wordsFiltered.forEach((k, v) -> {
@@ -228,14 +166,13 @@ public class CountWords {
 			});
 			file.setWords(words);
 
-			System.out.println("@@@@@@@@@" + wordsFiltered);
+			// System.out.println("@@@@@@@@@" + wordsFiltered);
 
 			return file;
 		}
 		// System.out.println(sumWords);
 		// System.out.println(result);
-		GeneralFile file = new GeneralFile();
-		file.setName(fileName);
+		GeneralFile file = new GeneralFile(fileName);
 		file.setWordCount(sumWords);
 
 		return file;

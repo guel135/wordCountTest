@@ -1,7 +1,5 @@
 package com.agtinternational.wordCount.entities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +10,6 @@ public class Directory {
 	Map<String, Directory> subdirectories;
 	public Directory(String name) {
 		super();
-		files=new ArrayList<GeneralFile>();
-		subdirectories=new HashMap<String,Directory>();
 		this.name = name;
 	}
 	public String getName() {
