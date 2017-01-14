@@ -31,7 +31,7 @@ public class CountWords {
 		// String fileName = "/home/guel/agt/testdata/a/perro/Berlin.txt";
 		// String fileName2 = "home/guel/agt/testdata/b/juan/manolo";
 		// String fileName3 = "home/guel/agt/testdata/b/perro/paco";
-		String folder = "/home/guel/agt/testdata";
+		String folder = "/home/guel/testdata";
 		readFoldersWalk(folder);
 		//
 		// ArrayList<String> cortes = new ArrayList<String>();
@@ -60,7 +60,7 @@ public class CountWords {
 				System.out.println(filePath);
 				ArrayList<String> splittedPaths = new ArrayList<String>();
 
-				splittedPaths.addAll(Arrays.asList(folder.split("/")));
+				splittedPaths.addAll(Arrays.asList(filePath.toString().split("/")));
 				if (splittedPaths.get(0).equals("/"))
 					splittedPaths.remove(0);
 				if (Files.isDirectory(filePath)) {
@@ -104,15 +104,21 @@ public class CountWords {
 	private static Directory addSubdirectory(GeneralFile file, Directory parentDirectory,
 			ArrayList<String> splittedPaths) {
 		String name = splittedPaths.get(0);
+		System.out.println(name);
 		splittedPaths.remove(0);
 		// System.out.println(name + " cortes " + cortes);
 		if (splittedPaths.size() == 0 && file != null) {
+			
+			System.out.println("entra if add FILE" + file);
 			if (parentDirectory.getFiles() == null)
+				{
 				parentDirectory.setFiles(new ArrayList<GeneralFile>());
+				}
 			parentDirectory.getFiles().add(file);
 
 		} else {
 			Directory subdirectory;
+
 			if (parentDirectory.getSubdirectories() != null && parentDirectory.getSubdirectories().containsKey(name)) {
 				subdirectory = parentDirectory.getSubdirectories().get(name);
 
@@ -121,7 +127,7 @@ public class CountWords {
 			}
 			if (splittedPaths.size() > 0) {
 				subdirectory = addSubdirectory(file, subdirectory, splittedPaths);
-
+				System.out.println("entra if add subdirectory name:"+name + file);
 			}
 			if (parentDirectory.getSubdirectories() == null)
 				parentDirectory.setSubdirectories(new HashMap<String, Directory>());
@@ -129,6 +135,8 @@ public class CountWords {
 		}
 		return parentDirectory;
 	}
+	
+
 
 	private static void countInLine(String line, Map<String, Long> result) {
 		// System.out.println("result entrada " + result);
