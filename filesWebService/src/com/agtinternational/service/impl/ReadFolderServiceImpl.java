@@ -31,7 +31,6 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 
 	public Directory read(String folder, long wordAmount, long wordRepeat) {
 
-		baseDirectory.setName(folder);
 
 		try (Stream<Path> paths = Files.walk(Paths.get(folder))) {
 			paths.forEach(filePath -> {
@@ -71,6 +70,10 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		baseDirectory=baseDirectory.getSubdirectories().get("");
+		baseDirectory.setName(folder);
+			
+		
 		return baseDirectory;
 	}
 
