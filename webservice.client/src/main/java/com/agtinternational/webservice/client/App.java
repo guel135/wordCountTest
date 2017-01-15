@@ -31,16 +31,14 @@ public class App {
 
 			String output = br.readLine();
 
-			// System.out.println("Output from Server .... \n");
-			// while ((output = br.readLine()) != null) {
-			// System.out.println(output);
-			// }
 			Gson gson = new Gson();
 			Directory directory = gson.fromJson(output, Directory.class);
 			System.out.println(directory);
 
 			System.out.println("**** LONG FILES ****\n");
-			printDirectory(directory, null, null, 0);
+			printDirectory(directory, true, 0);
+			System.out.println("**** SHORT FILES ****\n");
+			printDirectory(directory, false, 0);
 
 			conn.disconnect();
 
@@ -56,8 +54,7 @@ public class App {
 
 	}
 
-	private static void printDirectory(Directory directory, Boolean first, String fileSize, int tabs) {
-		System.out.println(tabs);
+	private static void printDirectory(Directory directory, Boolean big, int tabs) {
 		String tab = "\t";
 		String printTabs = "";
 		printTabs = printTabs + String.join("", Collections.nCopies(tabs, tab));
@@ -69,15 +66,18 @@ public class App {
 			for (GeneralFile file : directory.getFiles()) {
 
 				String output = "<file " + file.getName() + "> <" + file.getWordCount() + " words> ";
+				if (big == true) {
+					if (file.getWords() != null) {
 
-				if (file.getWords()!=null) {
-					
-					for (Word word : file.getWords()) {
-						output = output + "<word " + word.getWord() + " " + word.getRepetition() + "> ";
+						for (Word word : file.getWords()) {
+							output = output + "<word " + word.getWord() + " " + word.getRepetition() + "> ";
 
+						}
+						System.out.println(printTabs + output);
 					}
+				} else {
+					System.out.println(printTabs + output);
 				}
-				System.out.println(printTabs + output);
 
 			}
 		}
@@ -85,12 +85,8 @@ public class App {
 		if (directory.getSubdirectories() != null) {
 
 			for (HashMap.Entry<String, Directory> subDirectory : directory.getSubdirectories().entrySet()) {
-				// System.out.println(entry.getKey() + "/" +
-				// entry.getValue());
-				// System.out.println(printTabs+"<" + subDirectory.getKey()
-				// +
-				// ">");
-				printDirectory(subDirectory.getValue(), null, null, tabs + 1);
+
+				printDirectory(subDirectory.getValue(), big, tabs + 1);
 			}
 
 		}
