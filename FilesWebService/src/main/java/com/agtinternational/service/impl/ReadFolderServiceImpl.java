@@ -52,13 +52,14 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 						if (file instanceof BigFile) {
 							BigFile bigFile = (BigFile) file;
 							System.out.println("Big" + bigFile.getName() + "words:" + bigFile.getWordCount());
+						} else {
+							if (file instanceof GeneralFile) {
+								GeneralFile generalFile = (GeneralFile) file;
+								System.out.println(
+										"Small " + generalFile.getName() + "words:" + generalFile.getWordCount());
+							}
+							baseDirectory = addSubdirectory(file, baseDirectory, splittedPaths);
 						}
-						if (file instanceof GeneralFile) {
-							GeneralFile generalFile = (GeneralFile) file;
-							System.out
-									.println("Small " + generalFile.getName() + "words:" + generalFile.getWordCount());
-						}
-						baseDirectory = addSubdirectory(file, baseDirectory, splittedPaths);
 
 					} catch (IOException e) {
 						e.printStackTrace();
