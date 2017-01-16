@@ -1,5 +1,7 @@
 package com.agtinternational.read.folder.rest;
 
+import java.io.IOException;
+
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -23,21 +25,17 @@ public class FilesWebService {
 	@Produces(MediaType.TEXT_PLAIN)
 
 	public Response verifyRESTService(@Context UriInfo info,
-
-			@QueryParam("url") String url, @DefaultValue("100") @QueryParam("longerthan") long wordAmount,
-			@DefaultValue("50") @QueryParam("morethan") long wordRepeat) {
-
+			@QueryParam("url") String url,
+			@DefaultValue("txt") @QueryParam("extension") String extension,@DefaultValue("100") @QueryParam("longerthan") int wordAmount,
+			@DefaultValue("50") @QueryParam("morethan") int wordRepeat) throws IOException {
 		
 		ReadFolderService readFolderService=new ReadFolderServiceImpl();
-		Directory baseDirectory=readFolderService.read(url, wordAmount, wordRepeat);
+		Directory baseDirectory=readFolderService.read(url,extension, wordAmount, wordRepeat);
 		
 		Gson gson = new Gson();
 		String jsonInString = gson.toJson(baseDirectory);
-		// return HTTP response 200 in case of success
+		
 		return Response.ok(jsonInString, MediaType.APPLICATION_JSON).build();
 
-		// return Response.status(200).entity(result+" "+url+" "+wordamount+"
-		// "+wordlimit).build();
 	}
-
 }

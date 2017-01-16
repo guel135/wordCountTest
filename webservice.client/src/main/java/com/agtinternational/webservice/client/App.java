@@ -18,7 +18,7 @@ public class App {
 	public static void main(String[] args) {
 		try {
 
-			URL url = new URL("http://localhost:8080/filesWebService/files?url=/home/guel/testdata");
+			URL url = new URL("http://localhost:8080/FilesREST/files?url=/home/guel/testdata");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("content-type", "application/json");
@@ -33,11 +33,10 @@ public class App {
 
 			Gson gson = new Gson();
 			Directory directory = gson.fromJson(output, Directory.class);
-			System.out.println(directory);
 
-			System.out.println("**** LONG FILES ****\n");
+			System.out.println("\n**** LONG FILES ****\n");
 			printDirectory(directory, true, 0);
-			System.out.println("**** SHORT FILES ****\n");
+			System.out.println("\n**** SHORT FILES ****\n");
 			printDirectory(directory, false, 0);
 
 			conn.disconnect();

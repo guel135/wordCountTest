@@ -3,6 +3,7 @@ package com.agtinternational.service.impl;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,23 +15,21 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.agtinternational.entities.BigFile;
 import com.agtinternational.entities.Directory;
 import com.agtinternational.entities.GeneralFile;
 import com.agtinternational.entities.Word;
 import com.agtinternational.service.ReadFolderService;
 
-
-
-
 public class ReadFolderServiceImpl implements ReadFolderService {
 
 	private static final String ONLY_LETTERS_REGEX = "\\p{L}+";
 	private static final String CHARSET_ISO = "ISO-8859-1";
-	Directory baseDirectory=new Directory(null);
+	Directory baseDirectory = new Directory(null);
 
-	public Directory read(String folder, long wordAmount, long wordRepeat) {
-
+	public Directory read(String folder, String extension, int wordAmount, int wordRepeat) throws IOException {
 
 		try (Stream<Path> paths = Files.walk(Paths.get(folder))) {
 			paths.forEach(filePath -> {
@@ -45,7 +44,8 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 
 				}
 
-				if (Files.isRegularFile(filePath)) {
+				if (Files.isRegularFile(filePath)
+						&& (FilenameUtils.getExtension(filePath.toString()).equals(extension))) {
 					try {
 
 						GeneralFile file = readFile(filePath.toString(), wordAmount, wordRepeat);
@@ -61,19 +61,18 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 						baseDirectory = addSubdirectory(file, baseDirectory, splittedPaths);
 
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			});
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+
+			throw new NoSuchFileException(folder);
+
 		}
-		baseDirectory=baseDirectory.getSubdirectories().get("");
+		baseDirectory = baseDirectory.getSubdirectories().get("");
 		baseDirectory.setName(folder);
-			
-		
+
 		return baseDirectory;
 	}
 
