@@ -58,8 +58,8 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 								System.out.println(
 										"Small " + generalFile.getName() + "words:" + generalFile.getWordCount());
 							}
-							baseDirectory = addSubdirectory(file, baseDirectory, splittedPaths);
 						}
+						baseDirectory = addSubdirectory(file, baseDirectory, splittedPaths);
 
 					} catch (IOException e) {
 						e.printStackTrace();
