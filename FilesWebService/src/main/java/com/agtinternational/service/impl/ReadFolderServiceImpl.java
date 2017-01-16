@@ -110,10 +110,12 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 
 	private static void countInLine(String line, Map<String, Long> result) {
 
+		// Count word repetition every line
 		Map<String, Long> counter = Arrays.asList(line.split(",|\\s+|\\.")).stream().map(String::toLowerCase)
 				.filter(word -> word.length() > 0).filter(word -> word.matches(ONLY_LETTERS_REGEX))
 				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
+		// merging data generated in a line with the total
 		counter.forEach((key, value) -> result.merge(key, value, Long::sum));
 	}
 
@@ -132,6 +134,7 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 			BigFile file = new BigFile(cleanName);
 			file.setWordCount(sumWords);
 			List<Word> words = new ArrayList<Word>();
+			// Filtering words repeated more than x times.
 			Map<String, Long> wordsFiltered = result.entrySet().stream().filter(map -> map.getValue() > wordRepeat)
 
 					.collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
