@@ -27,10 +27,15 @@ public class FilesWebService {
 	public Response verifyRESTService(@Context UriInfo info,
 			@QueryParam("url") String url,
 			@DefaultValue("txt") @QueryParam("extension") String extension,@DefaultValue("100") @QueryParam("longerthan") int wordAmount,
-			@DefaultValue("50") @QueryParam("morethan") int wordRepeat) throws IOException {
+			@DefaultValue("50") @QueryParam("morethan") int wordRepeat) {
 		
 		ReadFolderService readFolderService=new ReadFolderServiceImpl();
-		Directory baseDirectory=readFolderService.read(url,extension, wordAmount, wordRepeat);
+		Directory baseDirectory = null;
+		try {
+			baseDirectory = readFolderService.read(url,extension, wordAmount, wordRepeat);
+		} catch (IOException e) {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
 		
 		Gson gson = new Gson();
 		String jsonInString = gson.toJson(baseDirectory);
