@@ -33,7 +33,6 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 
 		try (Stream<Path> paths = Files.walk(Paths.get(folder))) {
 			paths.forEach(filePath -> {
-				System.out.println(filePath);
 				ArrayList<String> splittedPaths = new ArrayList<String>();
 				String filePathName = filePath.toString().replaceAll(folder, "");
 				splittedPaths.addAll(Arrays.asList(filePathName.split("/")));
@@ -49,14 +48,6 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 					try {
 
 						GeneralFile file = readFile(filePath.toString(), wordAmount, wordRepeat);
-//						if (file instanceof BigFile) {
-//							@SuppressWarnings("unused")
-//							BigFile bigFile = (BigFile) file;
-//						}
-//						if (file instanceof GeneralFile) {
-//							@SuppressWarnings("unused")
-//							GeneralFile generalFile = (GeneralFile) file;
-//						}
 
 						baseDirectory = addSubdirectory(file, baseDirectory, splittedPaths);
 
@@ -70,16 +61,15 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 			throw new NoSuchFileException(folder);
 
 		}
-		baseDirectory = baseDirectory.getSubdirectories().get("");
-		baseDirectory.setName(folder);
+		refactorDirectory(folder);
 
 		return baseDirectory;
 	}
 
+
 	private static Directory addSubdirectory(GeneralFile file, Directory parentDirectory,
 			ArrayList<String> splittedPaths) {
 		String name = splittedPaths.get(0);
-		System.out.println(name);
 		splittedPaths.remove(0);
 		if (splittedPaths.size() == 0 && file != null) {
 
@@ -105,17 +95,6 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 			parentDirectory.getSubdirectories().put(name, subdirectory);
 		}
 		return parentDirectory;
-	}
-
-	private static void countInLine(String line, Map<String, Long> result) {
-
-		// Count word repetition every line
-		Map<String, Long> counter = Arrays.asList(line.split(",|\\s+|\\.")).stream().map(String::toLowerCase)
-				.filter(word -> word.length() > 0).filter(word -> word.matches(ONLY_LETTERS_REGEX))
-				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-		// merging data generated in a line with the total
-		counter.forEach((key, value) -> result.merge(key, value, Long::sum));
 	}
 
 	private static GeneralFile readFile(String fileName, long wordAmount, long wordRepeat) throws IOException {
@@ -151,6 +130,22 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 		return file;
 	}
 
+	private static void countInLine(String line, Map<String, Long> result) {
+
+		// Count word repetition every line
+		Map<String, Long> counter = Arrays.asList(line.split(",|\\s+|\\.")).stream().map(String::toLowerCase)
+				.filter(word -> word.length() > 0).filter(word -> word.matches(ONLY_LETTERS_REGEX))
+				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+		// merging data generated in a line with the total
+		counter.forEach((key, value) -> result.merge(key, value, Long::sum));
+	}
+
+
+	private void refactorDirectory(String folder) {
+		baseDirectory = baseDirectory.getSubdirectories().get("");
+		baseDirectory.setName(folder);
+	}
 	private static String cleanFileName(String fileName) {
 		return Arrays.asList(fileName.split("/")).get(fileName.split("/").length - 1);
 	}
