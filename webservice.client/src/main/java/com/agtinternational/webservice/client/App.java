@@ -18,7 +18,7 @@ public class App {
 	public static void main(String[] args) {
 		try {
 
-			URL url = new URL("http://localhost:8080/FilesREST/files?url=/home/guel/testdata");
+			URL url = new URL("http://localhost:8080/ReadFilesWebService/files?url=/home/guel/testdata");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("content-type", "application/json");
