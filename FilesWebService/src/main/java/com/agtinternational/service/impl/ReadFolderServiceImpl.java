@@ -49,15 +49,14 @@ public class ReadFolderServiceImpl implements ReadFolderService {
 					try {
 
 						GeneralFile file = readFile(filePath.toString(), wordAmount, wordRepeat);
-						if (file instanceof BigFile) {
-							BigFile bigFile = (BigFile) file;
-							System.out.println("Big" + bigFile.getName() + "words:" + bigFile.getWordCount());
-						}
-						if (file instanceof GeneralFile) {
-							GeneralFile generalFile = (GeneralFile) file;
-							System.out
-									.println("Small " + generalFile.getName() + "words:" + generalFile.getWordCount());
-						}
+//						if (file instanceof BigFile) {
+//							@SuppressWarnings("unused")
+//							BigFile bigFile = (BigFile) file;
+//						}
+//						if (file instanceof GeneralFile) {
+//							@SuppressWarnings("unused")
+//							GeneralFile generalFile = (GeneralFile) file;
+//						}
 
 						baseDirectory = addSubdirectory(file, baseDirectory, splittedPaths);
 

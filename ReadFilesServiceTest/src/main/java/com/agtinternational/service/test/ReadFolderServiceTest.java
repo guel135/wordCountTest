@@ -1,5 +1,7 @@
 package com.agtinternational.service.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
@@ -16,8 +18,6 @@ import com.agtinternational.entities.GeneralFile;
 import com.agtinternational.entities.Word;
 import com.agtinternational.service.ReadFolderService;
 import com.agtinternational.service.impl.ReadFolderServiceImpl;
-
-import junit.framework.Assert;
 
 public class ReadFolderServiceTest {
 
@@ -87,7 +87,7 @@ public class ReadFolderServiceTest {
 
 		Directory directory = service.read(absolutePath, "txt", 500, 25);
 
-		Assert.assertEquals("Directories are not the same", result, directory);
+		assertEquals("Directories are not the same", result, directory);
 
 	}
 
